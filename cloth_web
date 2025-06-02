@@ -1,0 +1,105 @@
+# Re-import necessary modules after code execution state reset
+import shutil
+import os
+from zipfile import ZipFile
+
+# Recreate the zip file contents
+project_files = {
+    "sahria-cloth-store/package.json": """{
+  "name": "sahria-cloth-store",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0"
+  }
+}""",
+    "sahria-cloth-store/index.html": """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahria Cloth Store</title>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
+""",
+    "sahria-cloth-store/postcss.config.js": """export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+""",
+    "sahria-cloth-store/tailwind.config.js": """export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+""",
+    "sahria-cloth-store/src/main.jsx": """import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+""",
+    "sahria-cloth-store/src/App.jsx": """export default function App() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-white">
+      <h1 className="text-3xl font-bold mb-4 text-blue-600">Sahria Cloth Store</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
+        {[
+          { name: "Panjabi", price: "৳1200" },
+          { name: "Shirt", price: "৳900" },
+          { name: "Jeans Pant", price: "৳1500" }
+        ].map((item) => (
+          <div key={item.name} className="border p-4 rounded-xl shadow bg-gray-50">
+            <h2 className="text-xl font-semibold">{item.name}</h2>
+            <p className="text-gray-700">{item.price}</p>
+            <button className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">অর্ডার করুন</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+""",
+    "sahria-cloth-store/src/index.css": """@tailwind base;
+@tailwind components;
+@tailwind utilities;
+"""
+}
+
+# Write project files
+project_dir = "/mnt/data/sahria-cloth-store"
+os.makedirs(project_dir, exist_ok=True)
+
+for path, content in project_files.items():
+    full_path = os.path.join("/mnt/data", path)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    with open(full_path, "w") as f:
+        f.write(content)
+
+
